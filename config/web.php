@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'Materials',
+    'name' => 'Ge-Ma',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
