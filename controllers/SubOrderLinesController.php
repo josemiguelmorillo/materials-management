@@ -13,8 +13,10 @@ use app\models\Teachers;
 use Yii;
 use app\models\SubOrderLines;
 use app\models\SubOrderLinesSearch;
+use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -137,7 +139,11 @@ class SubOrderLinesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
     }

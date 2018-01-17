@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use HttpException;
 use Yii;
 use app\models\Orders;
 use app\models\OrdersSearch;
+use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -101,7 +103,11 @@ class OrdersController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
     }

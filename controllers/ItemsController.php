@@ -7,8 +7,11 @@ use app\models\Suppliers;
 use Yii;
 use app\models\Items;
 use app\models\ItemsSearch;
+use yii\db\IntegrityException;
+use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -90,6 +93,8 @@ class ItemsController extends Controller
      */
     public function actionUpdate($id)
     {
+        $suppliers = ArrayHelper::map(Suppliers::find()->all(), 'supplier_id', 'name');
+        $itemCategories = ArrayHelper::map(ItemCategories::find()->all(), 'item_category_id', 'name');
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -97,6 +102,8 @@ class ItemsController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'suppliers' => $suppliers,
+                'itemCategories' => $itemCategories,
             ]);
         }
     }
@@ -109,7 +116,11 @@ class ItemsController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
     }

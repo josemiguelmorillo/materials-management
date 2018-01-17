@@ -6,7 +6,9 @@ use app\models\SubOrders;
 use Yii;
 use app\models\Suppliers;
 use app\models\SuppliersSearch;
+use yii\db\IntegrityException;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -102,7 +104,11 @@ class SuppliersController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
     }
