@@ -1,6 +1,21 @@
 html,
 body {
     height: 100%;
+    font-family: 'Dosis','Roboto',Helvetica,Arial,sans-serif;
+}
+
+.navbar {
+    min-height: 100px;
+    margin-bottom: 50px;
+}
+
+@media (min-width: 767px) {
+    .navbar-nav > li > a {
+        /* (80px - line-height of 27px) / 2 = 26.5px */
+        padding-top: 36.5px;
+        padding-bottom: 36.5px;
+        line-height: 27px;
+    }
 }
 
 .wrap {
@@ -11,7 +26,7 @@ body {
 }
 
 .wrap > .container {
-    padding: 70px 15px 20px;
+    padding: 110px 15px 20px;
 }
 
 .footer {
@@ -92,7 +107,7 @@ a.desc:after {
 
 /* align the logout "link" (button in form) of the navbar */
 .nav li > form > button.logout {
-    padding: 15px;
+    padding-top: 39.5px;
     border: none;
 }
 
@@ -102,6 +117,7 @@ a.desc:after {
         text-align: left;
         width: 100%;
         padding: 10px 15px;
+        line-height: 27px;
     }
 }
 

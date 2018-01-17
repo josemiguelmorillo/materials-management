@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use app\assets\FontAsset;
 use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -11,6 +12,7 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
+FontAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -29,20 +31,21 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => Html::img('@web/images/logo.png', ['alt'=>Yii::$app->name, 'class'=>'img-responsive']),
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
+            //'class' => 'navbar-inverse navbar-fixed-top bg-faded',
+            'class' => 'navbar-default navbar-fixed-top',
         ],
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Items', 'url' => ['/items']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Item Categories', 'url' => ['/item-categories']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Suppliers', 'url' => ['/suppliers']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Orders', 'url' => ['/orders']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Stocks', 'url' => ['/stocks']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => 'Items', 'url' => ['/items/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => 'Item Categories', 'url' => ['/item-categories/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => 'Suppliers', 'url' => ['/suppliers/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => 'Orders', 'url' => ['/orders/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => 'Stocks', 'url' => ['/stocks/index']]),
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (
@@ -71,9 +74,9 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; CES <?= date('Y') ?></p>
 
-        <p class="pull-right"><?= Yii::powered() ?></p>
+      <!--  <p class="pull-right"><?//= Yii::powered() ?></p>-->
     </div>
 </footer>
 
