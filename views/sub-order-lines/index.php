@@ -1,7 +1,7 @@
 <?php
 
+use kartik\grid\GridView;
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\SubOrderLinesSearch */
@@ -21,8 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php Pjax::begin(); ?>    <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'showPageSummary' => true,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class'=>'kartik\grid\SerialColumn'],
             'idSuborder.order.order_id',
             'suborder_line_id',
             'id_suborder',
@@ -31,12 +32,33 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'item',
                 'value'=> 'item.supplier_reference',
             ],
-            'unit',
+            //'unit',
+
             'unit_price',
-            // 'discount',
+             'discount',
+            [
+                'attribute'=>'unit',
+                'width'=>'150px',
+                'hAlign'=>'right',
+                'format'=>['decimal', 0],
+                'pageSummary'=>true
+            ],
+            [
+                'class'=>'kartik\grid\FormulaColumn',
+                'header'=>Yii::t('app','Final Price'),
+                'value'=>function ($model, $key, $index, $widget) {
+                    $p = compact('model', 'key', 'index');
+                    return $widget->col(7, $p) * $widget->col(5, $p) * (1 - $widget->col(6, $p) /100);
+                },
+//                'mergeHeader'=>true,
+                'width'=>'150px',
+                'hAlign'=>'right',
+                'format'=>['decimal', 2],
+                'pageSummary'=>true
+            ],
             // 'line_detail_id',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'kartik\grid\ActionColumn'],
         ],
     ]); ?>
 <?php Pjax::end(); ?></div>

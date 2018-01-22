@@ -3,10 +3,12 @@
 namespace app\controllers;
 
 use app\models\Orders;
+use app\models\SubOrderLines;
 use app\models\Suppliers;
 use Yii;
 use app\models\SubOrders;
 use app\models\SubOrdersSearch;
+use yii\data\ActiveDataProvider;
 use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -137,6 +139,23 @@ class SubOrdersController extends Controller
     public function actionAddSupplierItem($id) {
         $subOrder = $this->findModel($id);
         return $this->redirect(['sub-order-lines/create', 'order_id'=>$subOrder->order_id, 'sub_order_id'=> $id]);
+    }
+
+    public function actionViewSubOrderDetail()
+    {
+        $dataRequest = Yii::$app->request->post();
+        if (isset($dataRequest)) {
+            $subOrderId = $dataRequest['expandRowKey'];
+        } else {
+            return '';
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => SubOrderLines::find()->where(['id_suborder' => $subOrderId]),
+        ]);
+
+        return $this->renderPartial('_suborder_detail', ['dataProvider' => $dataProvider, 'key' => $_POST['expandRowKey']]);
+
     }
 
     /**
