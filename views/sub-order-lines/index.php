@@ -1,5 +1,6 @@
 <?php
 
+use kartik\alert\Alert;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -68,4 +69,5 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
         ],
     ]); ?>
+
 <?php Pjax::end(); ?></div>

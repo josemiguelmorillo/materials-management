@@ -16,21 +16,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->suborder_line_id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->suborder_line_id], [
+        <?= $model->receipt_unit == 0 ? Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->suborder_line_id], ['class' => 'btn btn-primary']) : '' ?>
+        <?= $model->receipt_unit == 0 ? Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->suborder_line_id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
             ],
-        ]) ?>
-        <?= Html::a(Yii::t('app', 'Receipt'), ['receipt', 'id' => $model->suborder_line_id], [
+        ]) : ''?>
+        <?= $model->receipt_unit == 0 ? Html::a(Yii::t('app', 'Receipt'), ['receipt', 'id' => $model->suborder_line_id], [
             'class' => 'btn btn-primary',
             'data' => [
                 'confirm' => Yii::t('app', 'Are you sure you want to receipt this units?'),
                 'method' => 'post',
             ],
-        ]) ?>
+        ]) : '' ?>
     </p>
 
     <?= DetailView::widget([
@@ -46,11 +46,5 @@ $this->params['breadcrumbs'][] = $this->title;
             'line_detail_id',
         ],
     ]) ?>
-
-    <?= Alert::widget([
-        'options' => ['class' => 'alert-info'],
-        'body' => Yii::$app->session->getFlash('success'),
-        'delay' => 4000,
-    ]); ?>
 
 </div>
