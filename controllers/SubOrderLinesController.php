@@ -6,6 +6,7 @@ use app\models\Classes;
 use app\models\Degrees;
 use app\models\Items;
 use app\models\LineDetails;
+use app\models\Stocks;
 use app\models\Subjects;
 use app\models\SubOrderLineForm;
 use app\models\SubOrders;
@@ -82,7 +83,7 @@ class SubOrderLinesController extends Controller
             /** @var SubOrders $subOrder */
             $subOrder = SubOrders::find()->where(['order_id' => $dataRequest['order_id'], 'id_suborder' => $dataRequest['sub_order_id']])->one();
             $supplier_id = $subOrder->supplier_id;
-            $items = ArrayHelper::map(Items::find()->where(['supplier_id'=> $supplier_id])->all(), 'item_id', 'supplier_reference');
+            $items = ArrayHelper::map(Items::find()->where(['supplier_id' => $supplier_id])->all(), 'item_id', 'supplier_reference');
             $subOrderLineForm->subOrderLines->id_suborder = $subOrder->id_suborder;
         } else {
             $items = ArrayHelper::map(Items::find()->all(), 'item_id', 'supplier_reference');
@@ -125,7 +126,7 @@ class SubOrderLinesController extends Controller
         $teachers = ArrayHelper::map(Teachers::find()->all(), 'teacher_id', 'name');
         $classes = ArrayHelper::map(Classes::find()->all(), 'class_id', 'name');
         $subjects = ArrayHelper::map(Subjects::find()->all(), 'subject_id', 'name');
-            $items = ArrayHelper::map(Items::find()->all(), 'item_id', 'supplier_reference');
+        $items = ArrayHelper::map(Items::find()->all(), 'item_id', 'supplier_reference');
 
 
         if ($subOrderLineForm->subOrderLines->load(Yii::$app->request->post()) && $subOrderLineForm->lineDetails->load(Yii::$app->request->post()) && $subOrderLineForm->save()) {
@@ -153,10 +154,19 @@ class SubOrderLinesController extends Controller
         try {
             $this->findModel($id)->delete();
         } catch (IntegrityException $e) {
-            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+            throw new HttpException(500, \Yii::t('app', 'Cannot delete this item.'), 405);
         }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionReceipt($id)
+    {
+        $subOrderLine = $this->findModel($id);
+        $this->addStock($subOrderLine);
+
+        return $this->redirect(['index']);
+
     }
 
     /**
@@ -173,5 +183,28 @@ class SubOrderLinesController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /**
+     * @param SubOrderLines $subOrderLine
+     */
+    private function addStock($subOrderLine)
+    {
+        var_dump($subOrderLine->attributes);
+        $stock = Stocks::find()->where(['item_id' => $subOrderLine->item_id])->one();
+        if ($stock === null) {
+            $stock = new Stocks();
+            $stock->setAttributes($subOrderLine->attributes);
+        } else {
+            $stock->unit += $subOrderLine->unit;
+        }
+
+        if ($stock->save()) {
+            $subOrderLine->receipt_unit = $subOrderLine->unit;
+            $subOrderLine->update();
+            Yii::$app->session->setFlash('success', "Units receipt successfully.");
+        }
+
+
     }
 }

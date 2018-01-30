@@ -58,7 +58,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             // 'line_detail_id',
 
-            ['class' => 'kartik\grid\ActionColumn'],
+            ['class' => 'kartik\grid\ActionColumn',
+                'template' => '{view} {receipt}',
+                'buttons' => [
+                    'receipt' => function($url, $model, $key) {     // render your custom button
+                        return  $model->receipt_unit == 0 ? Html::a(Html::tag('span', '', ['class' => "glyphicon glyphicon-check"]), $url, ['title'=> 'Receipt']) : '';
+                }
+                ]
+                ],
         ],
     ]); ?>
 <?php Pjax::end(); ?></div>

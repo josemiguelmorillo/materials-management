@@ -1,5 +1,6 @@
 <?php
 
+use kartik\alert\Alert;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -23,6 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a(Yii::t('app', 'Receipt'), ['receipt', 'id' => $model->suborder_line_id], [
+            'class' => 'btn btn-primary',
+            'data' => [
+                'confirm' => Yii::t('app', 'Are you sure you want to receipt this units?'),
+                'method' => 'post',
+            ],
+        ]) ?>
     </p>
 
     <?= DetailView::widget([
@@ -38,5 +46,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'line_detail_id',
         ],
     ]) ?>
+
+    <?= Alert::widget([
+        'options' => ['class' => 'alert-info'],
+        'body' => Yii::$app->session->getFlash('success'),
+        'delay' => 4000,
+    ]); ?>
 
 </div>

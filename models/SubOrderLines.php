@@ -14,6 +14,7 @@ use Yii;
  * @property string $unit_price
  * @property string $discount
  * @property integer $line_detail_id
+ * @property int $receipt_unit
  *
  * @property Items $item
  * @property LineDetails $lineDetail
@@ -36,7 +37,7 @@ class SubOrderLines extends \yii\db\ActiveRecord
     {
         return [
             [['id_suborder', 'item_id', 'line_detail_id'], 'required'],
-            [['id_suborder', 'item_id', 'unit', 'line_detail_id'], 'integer'],
+            [['id_suborder', 'item_id', 'unit', 'line_detail_id', 'receipt_unit'], 'integer'],
             [['unit_price', 'discount'], 'number'],
             [['item_id'], 'exist', 'skipOnError' => true, 'targetClass' => Items::className(), 'targetAttribute' => ['item_id' => 'item_id']],
             [['line_detail_id'], 'exist', 'skipOnError' => true, 'targetClass' => LineDetails::className(), 'targetAttribute' => ['line_detail_id' => 'line_detail_id']],
@@ -57,6 +58,8 @@ class SubOrderLines extends \yii\db\ActiveRecord
             'unit_price' => Yii::t('app', 'Unit Price'),
             'discount' => Yii::t('app', 'Discount'),
             'line_detail_id' => Yii::t('app', 'Line Detail ID'),
+            'receipt_unit' => Yii::t('app', 'Receipt Unit'),
+
         ];
     }
 
