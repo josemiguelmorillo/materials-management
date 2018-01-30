@@ -119,14 +119,25 @@ class SubOrderLinesController extends Controller
     public function actionUpdate($id)
     {
         $subOrderLineForm = new SubOrderLineForm();
-        $subOrderLineForm->subOrderLine = $this->findModel($id);
-        $model = $this->findModel($id);
+        $subOrderLineForm->subOrderLines = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->suborder_line_id]);
+        $degrees = ArrayHelper::map(Degrees::find()->all(), 'degree_id', 'name');
+        $teachers = ArrayHelper::map(Teachers::find()->all(), 'teacher_id', 'name');
+        $classes = ArrayHelper::map(Classes::find()->all(), 'class_id', 'name');
+        $subjects = ArrayHelper::map(Subjects::find()->all(), 'subject_id', 'name');
+            $items = ArrayHelper::map(Items::find()->all(), 'item_id', 'supplier_reference');
+
+
+        if ($subOrderLineForm->subOrderLines->load(Yii::$app->request->post()) && $subOrderLineForm->lineDetails->load(Yii::$app->request->post()) && $subOrderLineForm->save()) {
+            return $this->redirect(['view', 'id' => $subOrderLineForm->subOrderLines->suborder_line_id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                'subOrderLineForm' => $subOrderLineForm,
+                'items' => $items,
+                'degrees' => $degrees,
+                'teachers' => $teachers,
+                'classes' => $classes,
+                'subjects' => $subjects,
             ]);
         }
     }
