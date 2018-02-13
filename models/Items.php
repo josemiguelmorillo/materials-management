@@ -56,16 +56,16 @@ class Items extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'item_id' => 'Item ID',
-            'supplier_id' => 'Supplier ID',
-            'item_category_id' => 'Item Category ID',
-            'supplier_reference' => 'Supplier Reference',
-            'name' => 'Name',
-            'brand' => 'Brand',
-            'model' => 'Model',
-            'description' => 'Description',
-            'price' => 'Price',
-            'comment' => 'Comment',
+            'item_id' => \Yii::t('app','Item ID'),
+            'supplier_id' => \Yii::t('app','Supplier ID'),
+            'item_category_id' => \Yii::t('app','Item Category ID'),
+            'supplier_reference' => \Yii::t('app','Supplier Reference'),
+            'name' => \Yii::t('app','Name'),
+            'brand' => \Yii::t('app','Brand'),
+            'model' => \Yii::t('app','Model'),
+            'description' => \Yii::t('app','Description'),
+            'price' => \Yii::t('app','Price'),
+            'comment' => \Yii::t('app','Comment'),
         ];
     }
 

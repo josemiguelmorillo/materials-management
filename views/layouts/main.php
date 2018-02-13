@@ -41,18 +41,18 @@ FontAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Items', 'url' => ['/items/index']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Item Categories', 'url' => ['/item-categories/index']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Suppliers', 'url' => ['/suppliers/index']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Orders', 'url' => ['/orders/index']]),
-            Yii::$app->user->isGuest ? ('') : (['label' => 'Stocks', 'url' => ['/stocks/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => Yii::t('app','Items'), 'url' => ['/items/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => Yii::t('app','Item Categories'), 'url' => ['/item-categories/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => Yii::t('app','Suppliers'), 'url' => ['/suppliers/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => Yii::t('app','Orders'), 'url' => ['/orders/index']]),
+            Yii::$app->user->isGuest ? ('') : (['label' => Yii::t('app','Stocks'), 'url' => ['/stocks/index']]),
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => Yii::t('app','Login'), 'url' => ['/site/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    Yii::t('app','Logout') . ' (' . Yii::$app->user->identity->username . ')',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()

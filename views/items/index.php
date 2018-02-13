@@ -25,21 +25,35 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'item_id',
+            [
+                    'attribute' => 'item_id',
+               'headerOptions' => ['style' => 'width:5%'],
+            ],
             //'supplier_id',
             [
                 'attribute' => 'supplier',
                 'value' => 'supplier.name',
+                'headerOptions' => ['style' => 'width:20%'],
+                'label' => Yii::t('app', 'Supplier'),
 
             ],
             //'item_category_id',
             [
                 'attribute' => 'itemCategory',
                 'value' => 'itemCategory.name',
+                'headerOptions' => ['style' => 'width:10%'],
+                'label' => Yii::t('app', 'Category'),
 
             ],
-            'supplier_reference',
-            'name',
+            [
+                    'attribute'=>'supplier_reference',
+                     'headerOptions' => ['style' => 'width:20%'],
+            ],
+            [
+                    'attribute'=>'name',
+                'headerOptions' => ['style' => 'width:35%'],
+            ],
+
             // 'brand',
             // 'model',
             // 'description:ntext',
