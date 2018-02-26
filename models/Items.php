@@ -2,14 +2,14 @@
 
 namespace app\models;
 
-use yii\db\ActiveRecord;
+use Yii;
 
 /**
  * This is the model class for table "Items".
  *
- * @property integer $item_id
- * @property integer $supplier_id
- * @property integer $item_category_id
+ * @property int $item_id
+ * @property int $supplier_id
+ * @property int $item_category_id
  * @property string $supplier_reference
  * @property string $name
  * @property string $brand
@@ -17,13 +17,16 @@ use yii\db\ActiveRecord;
  * @property string $description
  * @property string $price
  * @property string $comment
+ * @property string $discount
+ * @property int $units_package
+ * @property string $catalog_page
  *
  * @property ItemCategories $itemCategory
  * @property Suppliers $supplier
  * @property Stocks[] $stocks
- * @property SubOrdersLines[] $subOrdersLines
+ * @property SubOrderLines[] $subOrderLines
  */
-class Items extends ActiveRecord
+class Items extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -40,11 +43,11 @@ class Items extends ActiveRecord
     {
         return [
             [['supplier_id', 'item_category_id', 'supplier_reference'], 'required'],
-            [['supplier_id', 'item_category_id'], 'integer'],
+            [['supplier_id', 'item_category_id', 'units_package'], 'integer'],
             [['description', 'comment'], 'string'],
-            [['price'], 'number'],
+            [['price', 'discount'], 'number'],
             [['supplier_reference'], 'string', 'max' => 256],
-            [['name', 'brand', 'model'], 'string', 'max' => 45],
+            [['name', 'brand', 'model', 'catalog_page'], 'string', 'max' => 45],
             [['item_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ItemCategories::className(), 'targetAttribute' => ['item_category_id' => 'item_category_id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Suppliers::className(), 'targetAttribute' => ['supplier_id' => 'supplier_id']],
         ];
@@ -56,16 +59,19 @@ class Items extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'item_id' => \Yii::t('app','Item ID'),
-            'supplier_id' => \Yii::t('app','Supplier ID'),
-            'item_category_id' => \Yii::t('app','Item Category ID'),
-            'supplier_reference' => \Yii::t('app','Supplier Reference'),
-            'name' => \Yii::t('app','Name'),
-            'brand' => \Yii::t('app','Brand'),
-            'model' => \Yii::t('app','Model'),
-            'description' => \Yii::t('app','Description'),
-            'price' => \Yii::t('app','Price'),
-            'comment' => \Yii::t('app','Comment'),
+            'item_id' => Yii::t('app', 'Item ID'),
+            'supplier_id' => Yii::t('app', 'Supplier ID'),
+            'item_category_id' => Yii::t('app', 'Item Category ID'),
+            'supplier_reference' => Yii::t('app', 'Supplier Reference'),
+            'name' => Yii::t('app', 'Name'),
+            'brand' => Yii::t('app', 'Brand'),
+            'model' => Yii::t('app', 'Model'),
+            'description' => Yii::t('app', 'Description'),
+            'price' => Yii::t('app', 'Price'),
+            'comment' => Yii::t('app', 'Comment'),
+            'discount' => Yii::t('app', 'Discount'),
+            'units_package' => Yii::t('app', 'Units Package'),
+            'catalog_page' => Yii::t('app', 'Catalog Page'),
         ];
     }
 
@@ -96,8 +102,8 @@ class Items extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSubOrdersLines()
+    public function getSubOrderLines()
     {
-        return $this->hasMany(SubOrdersLines::className(), ['item_id' => 'item_id']);
+        return $this->hasMany(SubOrderLines::className(), ['item_id' => 'item_id']);
     }
 }

@@ -28,6 +28,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'discount')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'units_package')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'catalog_page')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
 
     <div class="form-group">

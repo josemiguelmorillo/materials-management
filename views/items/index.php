@@ -18,22 +18,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Items'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Import Items'), ['import'], ['class' => 'btn btn-success']) ?>
     </p>
-    <?php Pjax::begin(); ?>    <?= GridView::widget([
+    <?php Pjax::begin(); ?>   <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            [
-                    'attribute' => 'item_id',
-               'headerOptions' => ['style' => 'width:5%'],
-            ],
+//            [
+//                    'attribute' => 'item_id',
+//               'headerOptions' => ['style' => 'width:5%'],
+//            ],
             //'supplier_id',
             [
                 'attribute' => 'supplier',
                 'value' => 'supplier.name',
-                'headerOptions' => ['style' => 'width:20%'],
+                'headerOptions' => ['style' => 'width:10%'],
                 'label' => Yii::t('app', 'Supplier'),
 
             ],
@@ -41,26 +42,30 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'itemCategory',
                 'value' => 'itemCategory.name',
-                'headerOptions' => ['style' => 'width:10%'],
+                //'headerOptions' => ['style' => 'width:10%'],
                 'label' => Yii::t('app', 'Category'),
 
             ],
             [
                     'attribute'=>'supplier_reference',
-                     'headerOptions' => ['style' => 'width:20%'],
+                'headerOptions' => ['style' => 'width:10%'],
             ],
             [
                     'attribute'=>'name',
-                'headerOptions' => ['style' => 'width:35%'],
+                //'headerOptions' => ['style' => 'width:35%'],
             ],
 
-            // 'brand',
-            // 'model',
-            // 'description:ntext',
-            // 'price',
-            // 'comment:ntext',
+             'brand',
+             'model',
+             'description:ntext',
+            [
+                'attribute' => 'price',
+                'headerOptions' => ['style' => 'width:5%'],
+            ],
+             'comment:ntext',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+
     <?php Pjax::end(); ?></div>
