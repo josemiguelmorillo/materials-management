@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -18,7 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Items'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app', 'Import Items'), ['import'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<span class="btn btn-success">Import Catalog</span>',
+            ['/items/show-import-modal'],
+            [
+                'title' => 'Import Catalog',
+                'data-toggle' => 'modal',
+                'data-target' => '#modal-import',
+            ]
+        );
+        ?>
     </p>
     <?php Pjax::begin(); ?>   <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -47,25 +56,32 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ],
             [
-                    'attribute'=>'supplier_reference',
+                'attribute' => 'supplier_reference',
                 'headerOptions' => ['style' => 'width:10%'],
             ],
             [
-                    'attribute'=>'name',
+                'attribute' => 'name',
                 //'headerOptions' => ['style' => 'width:35%'],
             ],
 
-             'brand',
-             'model',
-             'description:ntext',
+            'brand',
+            'model',
+            'description:ntext',
             [
                 'attribute' => 'price',
                 'headerOptions' => ['style' => 'width:5%'],
             ],
-             'comment:ntext',
+            'comment:ntext',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 
-    <?php Pjax::end(); ?></div>
+    <?php Pjax::end(); ?>
+
+    <div class="modal remote fade" id="modal-import">
+        <div class="modal-dialog">
+            <div class="modal-content loader-lg"></div>
+        </div>
+    </div>
+</div>
