@@ -47,7 +47,8 @@ class Items extends \yii\db\ActiveRecord
             [['description', 'comment'], 'string'],
             [['price', 'discount'], 'number'],
             [['supplier_reference'], 'string', 'max' => 256],
-            [['name', 'brand', 'model', 'catalog_page'], 'string', 'max' => 45],
+            [['name'], 'string', 'max' => 50],
+            [['brand', 'model', 'catalog_page'], 'string', 'max' => 45],
             [['item_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ItemCategories::className(), 'targetAttribute' => ['item_category_id' => 'item_category_id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Suppliers::className(), 'targetAttribute' => ['supplier_id' => 'supplier_id']],
         ];
