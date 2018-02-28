@@ -107,6 +107,8 @@ class SuppliersController extends Controller
         try {
             $this->findModel($id)->delete();
         } catch (IntegrityException $e) {
+            Yii::$app->session->addFlash('error', 'Cannot delete this item.');
+            return $this->redirect(['view', 'id' => $id]);
             throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
         }
 
