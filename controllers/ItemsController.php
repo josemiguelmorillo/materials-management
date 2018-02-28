@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\ItemCategories;
 use app\models\Suppliers;
 use app\models\UploadCatalogForm;
+use League\Csv\Reader;
 use Throwable;
 use Yii;
 use app\models\Items;
@@ -127,7 +128,9 @@ class ItemsController extends Controller
         try {
             $this->findModel($id)->delete();
         } catch (\Exception $e) {
-            throw new HttpException(500, \Yii::t('app', 'Cannot delete this item.'), 405);
+            Yii::$app->session->addFlash('error', 'Cannot delete this item.');
+            return $this->redirect(['view', 'id' => $id]);
+            //throw new HttpException(500, \Yii::t('app', 'Cannot delete this item.'), 405);
         }
 
         return $this->redirect(['index']);
@@ -182,10 +185,56 @@ class ItemsController extends Controller
         }
     }
 
+    /**
+     * @param UploadCatalogForm $model
+     * @return bool
+     */
     private function importFile($model)
     {
-        Yii::$app->session->addFlash('success', 'File uploaded successfully');
-        return true;
+        $result = true;
+        $csv = Reader::createFromPath($model->catalog_file->tempName, 'r');
+        $csv->setHeaderOffset(0);
+        $records = $csv->getRecords();
+        foreach ($records as $offset => $record) {
+            /** @var Items $item */
+            $item = Items::find()->where(['supplier_id' => $model->supplier_id, 'item_category_id' => $model->item_category_id, 'supplier_reference' => $record['referencia proveedor']])->one();
+            if (!isset($item)) {
+                $item = new Items();
+            }
+
+            if ($item->isNewRecord) {
+                $item->setAttributes([
+                    'supplier_id' => $model->supplier_id,
+                    'item_category_id' => $model->item_category_id,
+                    'supplier_reference' => $record['referencia proveedor'],
+                ]);
+            }
+
+            $item->setAttributes([
+                'name' => $record['nombre'],
+                'brand' => $record['marca'],
+                'model' => $record['modelo'],
+                'description' => $record['descripcion'],
+                'price' => $record['Precio'],
+                'discount' => empty($record['descuento']) ? 0 : empty($record['descuento']),
+                'units_package' => $record['unidades caja'],
+                'catalog_package' => $record['pagina catalogo'],
+            ]);
+            $result = $item->save();
+            if (!$result) {
+                foreach ($item->getFirstErrors() as $error) {
+                    Yii::$app->session->addFlash('error', $error . 'Check line ' . $offset . '[' . json_encode($record) . ']');
+                }
+
+                break;
+            }
+        }
+
+        if ($result) {
+            Yii::$app->session->addFlash('success', 'File uploaded successfully');
+        }
+
+        return $result;
     }
 
 }
