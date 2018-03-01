@@ -194,13 +194,16 @@ class ItemsController extends Controller
         $result = true;
         $csv = Reader::createFromPath($model->catalog_file->tempName, 'r');
         $csv->setHeaderOffset(0);
+        $missing = $this->getMissingHeaders($csv->getHeader());
+        if (!empty($missing)) {
+            Yii::$app->session->addFlash('error', 'Wrong CSV structure, missing headers [' . json_encode(array_keys($missing)) . ']');
+            return false;
+        }
+
         $records = $csv->getRecords();
         foreach ($records as $offset => $record) {
-            /** @var Items $item */
-            $item = Items::find()->where(['supplier_id' => $model->supplier_id, 'item_category_id' => $model->item_category_id, 'supplier_reference' => $record['referencia proveedor']])->one();
-            if (!isset($item)) {
-                $item = new Items();
-            }
+            $item = $this->getItemModel(['supplier_id' => $model->supplier_id, 'item_category_id' => $model->item_category_id, 'supplier_reference' => $record['referencia proveedor']]);
+
 
             if ($item->isNewRecord) {
                 $item->setAttributes([
@@ -235,6 +238,45 @@ class ItemsController extends Controller
         }
 
         return $result;
+    }
+
+    /**
+     * @param $whereArray
+     * @return Items
+     */
+    private function getItemModel($whereArray)
+    {
+        /** @var Items $item */
+        $item = Items::find()->where($whereArray)->one();
+        if (!isset($item)) {
+            $item = new Items();
+        }
+        return $item;
+    }
+
+    /**
+     * @param array $header
+     * @return array
+     */
+    private function getMissingHeaders($header)
+    {
+        $csvSchema = [
+            'ID PROVEEDOR',
+            'id categoria',
+            'referencia proveedor',
+            'nombre',
+            'marca',
+            'modelo',
+            'descripcion',
+            'Precio',
+            'descuento',
+            'unidades caja',
+            'pagina catalogo',
+        ];
+
+        $missing = array_diff_key(array_flip($csvSchema), array_flip($header));
+
+        return $missing;
     }
 
 }
