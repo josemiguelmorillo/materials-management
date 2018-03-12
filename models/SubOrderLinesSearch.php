@@ -13,13 +13,15 @@ use app\models\SubOrderLines;
 class SubOrderLinesSearch extends SubOrderLines
 {
     public $item;
+    public $order;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['item'], 'safe'],
+            [['item', 'order'], 'safe'],
             [['suborder_line_id', 'id_suborder', 'item_id', 'unit', 'line_detail_id'], 'integer'],
             [['unit_price', 'discount'], 'number'],
         ];
@@ -44,7 +46,7 @@ class SubOrderLinesSearch extends SubOrderLines
     public function search($params)
     {
         $query = SubOrderLines::find();
-        $query->joinWith('item');
+        $query->joinWith('item', 'idSuborder');
 
         // add conditions that should always apply here
 
@@ -71,7 +73,8 @@ class SubOrderLinesSearch extends SubOrderLines
             'line_detail_id' => $this->line_detail_id,
         ]);
 
-        $query->andFilterWhere(['like', 'Items.supplier_reference', $this->item]);
+        $query->andFilterWhere(['like', 'Items.supplier_reference', $this->item])
+            ->andFilterWhere(['=', 'SubOrders.order_id', $this->order]);
 
         return $dataProvider;
     }
