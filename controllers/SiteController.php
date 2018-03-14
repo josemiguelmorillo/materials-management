@@ -2,15 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\SubOrderLines;
-use app\models\SubOrderLinesSearch;
+use app\models\ContactForm;
+use app\models\LoginForm;
+use app\models\VwTeachersConsumptionSearch;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -63,7 +62,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SubOrderLinesSearch();
+        $searchModel = new VwTeachersConsumptionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
