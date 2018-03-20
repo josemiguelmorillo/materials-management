@@ -129,3 +129,10 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.horizontal-bar {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}

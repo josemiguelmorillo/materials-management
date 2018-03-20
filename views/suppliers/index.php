@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\SuppliersSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,9 +19,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a(Yii::t('app', 'Create Suppliers'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
+    <?php Pjax::begin(); ?>    <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'layout' => '{summary}{pager}<div class="horizontal-bar">{items}</div>{pager}',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -29,13 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'legal_name',
             'cif',
             'address',
-            // 'phone_number',
-            // 'contact_name',
-            // 'contact_phone',
-            // 'www',
-            // 'email:email',
+            'phone_number',
+            'contact_name',
+            'contact_phone',
+            'www',
+            'email:email',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-<?php Pjax::end(); ?></div>
+    <?php Pjax::end(); ?></div>

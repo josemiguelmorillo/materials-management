@@ -29,54 +29,73 @@ $this->params['breadcrumbs'][] = $this->title;
         );
         ?>
     </p>
-    <?php Pjax::begin(); ?>   <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+    <?php Pjax::begin(); ?>
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            //'layout' => '{summary}{items}{pager}',
+            'layout' => '{summary}{pager}<div class="horizontal-bar">{items}</div>{pager}',
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
 
 //            [
 //                    'attribute' => 'item_id',
 //               'headerOptions' => ['style' => 'width:5%'],
 //            ],
-            //'supplier_id',
-            [
-                'attribute' => 'supplier',
-                'value' => 'supplier.name',
-                'headerOptions' => ['style' => 'width:10%'],
-                'label' => Yii::t('app', 'Supplier'),
+                //'supplier_id',
+                [
+                    'attribute' => 'supplier',
+                    'value' => 'supplier.name',
+                    'headerOptions' => ['style' => 'min-width:100px'],
+                    'label' => Yii::t('app', 'Supplier'),
 
-            ],
-            //'item_category_id',
-            [
-                'attribute' => 'itemCategory',
-                'value' => 'itemCategory.name',
-                //'headerOptions' => ['style' => 'width:10%'],
-                'label' => Yii::t('app', 'Category'),
+                ],
+                //'item_category_id',
+                [
+                    'attribute' => 'itemCategory',
+                    'value' => 'itemCategory.name',
+                    'headerOptions' => ['style' => 'min-width:150px'],
+                    'label' => Yii::t('app', 'Category'),
 
-            ],
-            [
-                'attribute' => 'supplier_reference',
-                'headerOptions' => ['style' => 'width:10%'],
-            ],
-            [
-                'attribute' => 'name',
-                //'headerOptions' => ['style' => 'width:35%'],
-            ],
+                ],
+                [
+                    'attribute' => 'supplier_reference',
+                    'headerOptions' => ['style' => 'min-width:200px'],
+                ],
+                [
+                    'attribute' => 'name',
+                    'headerOptions' => ['style' => 'min-width:300px'],
+                ],
+                [
+                    'attribute' => 'brand',
+                    'headerOptions' => ['style' => 'min-width:100px'],
+                ],
+                [
+                    'attribute' => 'model',
+                    'headerOptions' => ['style' => 'min-width:200px'],
+                ],
+                [
+                    'attribute' => 'description',
+                    'headerOptions' => ['style' => 'min-width:500px'],
 
-            'brand',
-            'model',
-            'description:ntext',
-            [
-                'attribute' => 'price',
-                'headerOptions' => ['style' => 'width:5%'],
+                ],
+                [
+                    'attribute' => 'price',
+                    'headerOptions' => ['style' => 'min-width:100px'],
+                ],
+                [
+                    'attribute' => 'comment',
+                    'headerOptions' => ['style' => 'min-width:300px'],
+                ],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'contentOptions' => function ($model, $key, $index, $column) {
+                        return ['style' => 'min-width:70px'];
+                    }
+
+                ],
             ],
-            'comment:ntext',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
+        ]); ?>
     <?php Pjax::end(); ?>
 
     <div class="modal remote fade" id="modal-import">
