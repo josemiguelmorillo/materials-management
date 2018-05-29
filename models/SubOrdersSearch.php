@@ -64,7 +64,7 @@ class SubOrdersSearch extends SubOrders
         // grid filtering conditions
         $query->andFilterWhere([
             'id_suborder' => $this->id_suborder,
-            'order_id' => $this->order_id,
+            'SubOrders.order_id' => $this->order_id,
             'supplier_id' => $this->supplier_id,
         ]);
 

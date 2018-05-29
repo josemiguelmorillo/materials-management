@@ -7,9 +7,9 @@ use yii\helpers\Html;
 
 $this->title = Yii::t('app', 'Update {modelClass}: ', [
     'modelClass' => 'Sub Order Lines',
-]) . $model->suborder_line_id;
+]) . $subOrderLineForm->subOrderLines->suborder_line_id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sub Order Lines'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->suborder_line_id, 'url' => ['view', 'id' => $model->suborder_line_id]];
+$this->params['breadcrumbs'][] = ['label' => $subOrderLineForm->subOrderLines->suborder_line_id, 'url' => ['view', 'id' => $subOrderLineForm->subOrderLines->suborder_line_id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
 <div class="sub-order-lines-update">
@@ -17,7 +17,12 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'subOrderLineForm' => $subOrderLineForm,
+        'degrees' => $degrees,
+        'teachers' => $teachers,
+        'classes' => $classes,
+        'subjects' => $subjects,
+        'items'=> $items,
     ]) ?>
 
 </div>

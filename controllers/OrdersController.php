@@ -2,9 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\SubOrderLines;
+use app\models\SubOrders;
+use app\models\VwOrders;
+use app\models\VwOrdersSearch;
+use HttpException;
 use Yii;
 use app\models\Orders;
 use app\models\OrdersSearch;
+use yii\data\ActiveDataProvider;
+use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,7 +42,7 @@ class OrdersController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new OrdersSearch();
+        $searchModel = new VwOrdersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -101,9 +108,32 @@ class OrdersController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            Yii::$app->session->addFlash('error', 'Cannot delete this item.');
+            return $this->redirect(['view', 'id' => $id]);
+            throw new HttpException(500, \Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionViewOrderDetail()
+    {
+        $dataRequest = Yii::$app->request->post();
+        if (isset($dataRequest)) {
+            $orderId = $dataRequest['expandRowKey'];
+        } else {
+            return '';
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => SubOrders::find()->where(['order_id' => $orderId]),
+        ]);
+
+        return $this->renderPartial('_order_detail', ['dataProvider' => $dataProvider, 'key' => $_POST['expandRowKey']]);
+
     }
 
     /**

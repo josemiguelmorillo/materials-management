@@ -13,7 +13,7 @@ use Yii;
  *
  * @property Orders $order
  * @property Suppliers $supplier
- * @property SubOrdersLines[] $subOrdersLines
+ * @property SubOrderLines[] $subOrderLines
  */
 class SubOrders extends \yii\db\ActiveRecord
 {
@@ -69,8 +69,8 @@ class SubOrders extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSubOrdersLines()
+    public function getSubOrderLines()
     {
-        return $this->hasMany(SubOrdersLines::className(), ['id_suborder' => 'id_suborder']);
+        return $this->hasMany(SubOrderLines::className(), ['id_suborder' => 'id_suborder']);
     }
 }

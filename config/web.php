@@ -5,14 +5,28 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'Materials',
+    'name' => 'Ge-Ma',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
+    'language' => 'es-ES',
     'components' => [
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    //'basePath' => '@app/messages',
+                    //'sourceLanguage' => 'en-US',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                        'app/error' => 'error.php',
+                    ],
+                ],
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'xea5HTH13GqIZbVcix70GP-aokJJbxjP',
@@ -53,16 +67,16 @@ $config = [
             'enablePrettyUrl' => true,
         ],
     ],
-//    'modules' => [
-//        'gridview' =>  [
-//            'class' => '\kartik\grid\Module'
-//            // enter optional module parameters below - only if you need to
-//            // use your own export download action or custom translation
-//            // message source
-//            // 'downloadAction' => 'gridview/export/download',
-//            // 'i18n' => []
-//        ]
-//    ],
+    'modules' => [
+        'gridview' =>  [
+            'class' => '\kartik\grid\Module'
+            // enter optional module parameters below - only if you need to
+            // use your own export download action or custom translation
+            // message source
+            // 'downloadAction' => 'gridview/export/download',
+            // 'i18n' => []
+        ]
+    ],
     'params' => $params,
 ];
 

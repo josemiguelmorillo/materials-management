@@ -23,13 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-        <?= Html::a(Yii::t('app', 'View Detail'), ['view-order-detail', 'id' => $model->order_id], [
-            'class' => 'btn btn-primary',
-            'data' => [
+<!--        <?//= Html::a(Yii::t('app', 'View Detail'), ['view-order-detail', 'id' => $model->order_id], [
+//            'class' => 'btn btn-primary',
+//            'data' => [
 //                'confirm' => Yii::t('app', 'Are you sure you want to order to this supplier?'),
-                'method' => 'post',
-            ],
-        ]) ?>
+ //               'method' => 'post',
+//            ],
+//        ]) ?>-->
     </p>
 
     <?= DetailView::widget([

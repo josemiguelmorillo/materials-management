@@ -6,6 +6,7 @@ use app\models\Classes;
 use app\models\Degrees;
 use app\models\Items;
 use app\models\LineDetails;
+use app\models\Stocks;
 use app\models\Subjects;
 use app\models\SubOrderLineForm;
 use app\models\SubOrders;
@@ -13,8 +14,10 @@ use app\models\Teachers;
 use Yii;
 use app\models\SubOrderLines;
 use app\models\SubOrderLinesSearch;
+use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -80,7 +83,7 @@ class SubOrderLinesController extends Controller
             /** @var SubOrders $subOrder */
             $subOrder = SubOrders::find()->where(['order_id' => $dataRequest['order_id'], 'id_suborder' => $dataRequest['sub_order_id']])->one();
             $supplier_id = $subOrder->supplier_id;
-            $items = ArrayHelper::map(Items::find()->where(['supplier_id'=> $supplier_id])->all(), 'item_id', 'supplier_reference');
+            $items = ArrayHelper::map(Items::find()->where(['supplier_id' => $supplier_id])->all(), 'item_id', 'supplier_reference');
             $subOrderLineForm->subOrderLines->id_suborder = $subOrder->id_suborder;
         } else {
             $items = ArrayHelper::map(Items::find()->all(), 'item_id', 'supplier_reference');
@@ -117,14 +120,25 @@ class SubOrderLinesController extends Controller
     public function actionUpdate($id)
     {
         $subOrderLineForm = new SubOrderLineForm();
-        $subOrderLineForm->subOrderLine = $this->findModel($id);
-        $model = $this->findModel($id);
+        $subOrderLineForm->subOrderLines = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->suborder_line_id]);
+        $degrees = ArrayHelper::map(Degrees::find()->all(), 'degree_id', 'name');
+        $teachers = ArrayHelper::map(Teachers::find()->all(), 'teacher_id', 'name');
+        $classes = ArrayHelper::map(Classes::find()->all(), 'class_id', 'name');
+        $subjects = ArrayHelper::map(Subjects::find()->all(), 'subject_id', 'name');
+        $items = ArrayHelper::map(Items::find()->all(), 'item_id', 'supplier_reference');
+
+
+        if ($subOrderLineForm->subOrderLines->load(Yii::$app->request->post()) && $subOrderLineForm->lineDetails->load(Yii::$app->request->post()) && $subOrderLineForm->save()) {
+            return $this->redirect(['view', 'id' => $subOrderLineForm->subOrderLines->suborder_line_id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                'subOrderLineForm' => $subOrderLineForm,
+                'items' => $items,
+                'degrees' => $degrees,
+                'teachers' => $teachers,
+                'classes' => $classes,
+                'subjects' => $subjects,
             ]);
         }
     }
@@ -137,9 +151,24 @@ class SubOrderLinesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            Yii::$app->session->addFlash('error', 'Cannot delete this item.');
+            return $this->redirect(['view', 'id' => $id]);
+            throw new HttpException(500, \Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionReceipt($id)
+    {
+        $subOrderLine = $this->findModel($id);
+        $this->addStock($subOrderLine);
+
+        return $this->redirect(['index']);
+
     }
 
     /**
@@ -156,5 +185,28 @@ class SubOrderLinesController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /**
+     * @param SubOrderLines $subOrderLine
+     */
+    private function addStock($subOrderLine)
+    {
+        var_dump($subOrderLine->attributes);
+        $stock = Stocks::find()->where(['item_id' => $subOrderLine->item_id])->one();
+        if ($stock === null) {
+            $stock = new Stocks();
+            $stock->setAttributes($subOrderLine->attributes);
+        } else {
+            $stock->unit += $subOrderLine->unit;
+        }
+
+        if ($stock->save()) {
+            $subOrderLine->receipt_unit = $subOrderLine->unit;
+            $subOrderLine->update();
+            Yii::$app->session->setFlash('success', "Units receipt successfully.");
+        }
+
+
     }
 }

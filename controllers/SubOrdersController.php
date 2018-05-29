@@ -3,12 +3,16 @@
 namespace app\controllers;
 
 use app\models\Orders;
+use app\models\SubOrderLines;
 use app\models\Suppliers;
 use Yii;
 use app\models\SubOrders;
 use app\models\SubOrdersSearch;
+use yii\data\ActiveDataProvider;
+use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -100,6 +104,8 @@ class SubOrdersController extends Controller
      */
     public function actionUpdate($id)
     {
+        $suppliers = ArrayHelper::map(Suppliers::find()->all(), 'supplier_id', 'name');
+        $orders = ArrayHelper::map(Orders::find()->all(), 'order_id', 'order_id');
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -107,6 +113,8 @@ class SubOrdersController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'suppliers' => $suppliers,
+                'orders' => $orders,
             ]);
         }
     }
@@ -119,7 +127,13 @@ class SubOrdersController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            Yii::$app->session->addFlash('error', 'Cannot delete this item.');
+            return $this->redirect(['view', 'id' => $id]);
+            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
     }
@@ -127,6 +141,23 @@ class SubOrdersController extends Controller
     public function actionAddSupplierItem($id) {
         $subOrder = $this->findModel($id);
         return $this->redirect(['sub-order-lines/create', 'order_id'=>$subOrder->order_id, 'sub_order_id'=> $id]);
+    }
+
+    public function actionViewSubOrderDetail()
+    {
+        $dataRequest = Yii::$app->request->post();
+        if (isset($dataRequest)) {
+            $subOrderId = $dataRequest['expandRowKey'];
+        } else {
+            return '';
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => SubOrderLines::find()->where(['id_suborder' => $subOrderId]),
+        ]);
+
+        return $this->renderPartial('_suborder_detail', ['dataProvider' => $dataProvider, 'key' => $_POST['expandRowKey']]);
+
     }
 
     /**

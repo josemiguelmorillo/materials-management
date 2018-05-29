@@ -2,52 +2,131 @@
 
 /* @var $this yii\web\View */
 
-$this->title = \Yii::t('app','Materials Management');
+use app\models\Orders;
+use app\models\Teachers;
+use kartik\grid\GridView;
+use yii\helpers\ArrayHelper;
+
+$this->title = \Yii::t('app', 'Materials Management');
 ?>
 <div class="site-index">
+    <?php
+    echo GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'showPageSummary' => true,
+        'pjax' => true,
+        'striped' => true,
+        'hover' => true,
+        'panel' => ['type' => 'primary', 'heading' => 'Teachers Consumption'],
+        'columns' => [
+            ['class' => 'kartik\grid\SerialColumn'],
+            [
+                'attribute' => 'teacher_name',
+                'group' => true,
+                'groupFooter' => function ($model, $key, $index, $widget) { // Closure method
+                    return [
+                        'mergeColumns' => [[1, 4]], // columns to merge in summary
+                        'content' => [             // content to show in each summary cell
+                            1 => 'Summary (' . $model->teacher_name . ')',
+                            6 => GridView::F_AVG,
+                            7 => GridView::F_SUM,
+                            8 => GridView::F_SUM,
+                        ],
+                        'contentFormats' => [      // content reformatting for each summary cell
+                            6 => ['format' => 'number', 'decimals' => 2],
+                            7 => ['format' => 'number', 'decimals' => 0],
+                            8 => ['format' => 'number', 'decimals' => 2],
+                        ],
+                        'contentOptions' => [      // content html attributes for each summary cell
+                            1 => ['style' => 'font-variant:small-caps'],
+                            6 => ['style' => 'text-align:right'],
+                            7 => ['style' => 'text-align:right'],
+                            8 => ['style' => 'text-align:right'],
+                        ],
+                        // html attributes for group summary row
+                        'options' => ['class' => 'danger', 'style' => 'font-weight:bold;']
+                    ];
+                }
+            ],
+            [
+                'attribute' => 'order_id',
+                'group' => true,
+                'subGroupOf' => 1,
+                'groupFooter' => function ($model, $key, $index, $widget) { // Closure method
+                    return [
+                        'mergeColumns' => [[2, 4]], // columns to merge in summary
+                        'content' => [             // content to show in each summary cell
+                            2 => 'Summary (' . $model->order_id . ')',
+                            6 => GridView::F_AVG,
+                            7 => GridView::F_SUM,
+                            8 => GridView::F_SUM,
+                        ],
+                        'contentFormats' => [      // content reformatting for each summary cell
+                            6 => ['format' => 'number', 'decimals' => 2],
+                            7 => ['format' => 'number', 'decimals' => 0],
+                            8 => ['format' => 'number', 'decimals' => 2],
+                        ],
+                        'contentOptions' => [      // content html attributes for each summary cell
+                            2 => ['style' => 'font-variant:small-caps'],
+                            6 => ['style' => 'text-align:right'],
+                            7 => ['style' => 'text-align:right'],
+                            8 => ['style' => 'text-align:right'],
+                        ],
+                        // html attributes for group summary row
+                        'options'=>['class'=>'success','style'=>'font-weight:bold;']
+                    ];
+                }
+            ],
+            [
+                'attribute' => 'id_suborder',
+                'group' => true,
+                'subGroupOf' => 2,
+            ],
+            [
+                'attribute' => 'item_name',
+                'pageSummary' => 'Page Summary',
+                'pageSummaryOptions' => ['class' => 'text-right text-warning'],
+            ],
+            [
+                'attribute' => 'discount',
+                'width' => '150px',
+                'hAlign' => 'right',
+                'format' => ['decimal', 2],
+                'pageSummary' => false,
+                'pageSummaryFunc' => GridView::F_AVG
+            ],
+            [
+                'attribute' => 'unit_price',
+                'width' => '150px',
+                'hAlign' => 'right',
+                'format' => ['decimal', 2],
+                'pageSummary' => true,
+                'pageSummaryFunc' => GridView::F_AVG
+            ],
 
-<!--    <div class="jumbotron">-->
-<!--        <h1>Congratulations!</h1>-->
-<!---->
-<!--        <p class="lead">You have successfully created your Yii-powered application.</p>-->
-<!---->
-<!--        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>-->
-<!--    </div>-->
-<!---->
-<!--    <div class="body-content">-->
-<!---->
-<!--        <div class="row">-->
-<!--            <div class="col-lg-4">-->
-<!--                <h2>Heading</h2>-->
-<!---->
-<!--                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et-->
-<!--                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip-->
-<!--                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu-->
-<!--                    fugiat nulla pariatur.</p>-->
-<!---->
-<!--                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>-->
-<!--            </div>-->
-<!--            <div class="col-lg-4">-->
-<!--                <h2>Heading</h2>-->
-<!---->
-<!--                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et-->
-<!--                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip-->
-<!--                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu-->
-<!--                    fugiat nulla pariatur.</p>-->
-<!---->
-<!--                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>-->
-<!--            </div>-->
-<!--            <div class="col-lg-4">-->
-<!--                <h2>Heading</h2>-->
-<!---->
-<!--                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et-->
-<!--                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip-->
-<!--                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu-->
-<!--                    fugiat nulla pariatur.</p>-->
-<!---->
-<!--                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>-->
-<!--            </div>-->
-<!--        </div>-->
-<!---->
-<!--    </div>-->
+            [
+                'attribute' => 'units',
+                'width' => '150px',
+                'hAlign' => 'right',
+                'format' => ['decimal', 0],
+                'pageSummary' => true
+            ],
+            [
+                'class' => 'kartik\grid\FormulaColumn',
+                'header' => 'Total Amount',
+                'value' => function ($model, $key, $index, $widget) {
+                    $p = compact('model', 'key', 'index');
+                    return $widget->col(6, $p) * $widget->col(7, $p) * (1 - $widget->col(5, $p) / 100);
+                },
+                'mergeHeader' => true,
+                'width' => '150px',
+                'hAlign' => 'right',
+                'format' => ['decimal', 2],
+                'pageSummary' => true
+            ],
+        ],
+    ]);
+
+    ?>
 </div>

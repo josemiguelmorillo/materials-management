@@ -5,7 +5,10 @@ namespace app\controllers;
 use Yii;
 use app\models\Classes;
 use app\models\ClassesSearch;
+use yii\db\IntegrityException;
+use yii\db\StaleObjectException;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -101,7 +104,13 @@ class ClassesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        try {
+            $this->findModel($id)->delete();
+        } catch (IntegrityException $e) {
+            Yii::$app->session->addFlash('error', 'Cannot delete this item.');
+            return $this->redirect(['view', 'id' => $id]);
+            throw new HttpException(500,\Yii::t('app', 'Cannot delete this item.'), 405);
+        }
 
         return $this->redirect(['index']);
     }
