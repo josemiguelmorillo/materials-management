@@ -72,7 +72,7 @@ class ItemsSearch extends Items
         ]);
 
         $query->andFilterWhere(['like', 'supplier_reference', $this->supplier_reference])
-            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'Items.name', $this->name])
             ->andFilterWhere(['like', 'brand', $this->brand])
             ->andFilterWhere(['like', 'model', $this->model])
             ->andFilterWhere(['like', 'description', $this->description])
