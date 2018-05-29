@@ -36,6 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
             //'layout' => '{summary}{items}{pager}',
             'layout' => '{summary}{pager}<div class="horizontal-bar">{items}</div>{pager}',
             'columns' => [
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'contentOptions' => function ($model, $key, $index, $column) {
+                        return ['style' => 'min-width:70px'];
+                    }
+
+                ],
                 ['class' => 'yii\grid\SerialColumn'],
 
 //            [
