@@ -18,7 +18,7 @@ $this->title = \Yii::t('app', 'Materials Management');
         'pjax' => true,
         'striped' => true,
         'hover' => true,
-        'panel' => ['type' => 'primary', 'heading' => 'Grid Grouping Example'],
+        'panel' => ['type' => 'primary', 'heading' => 'Teachers Consumption'],
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
             [
